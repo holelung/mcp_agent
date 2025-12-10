@@ -109,24 +109,24 @@ onMounted(loadTodos);
 </script>
 
 <template>
-  <div class="space-y-6">
+  <div class="space-y-4 sm:space-y-6 animate-fade-in">
     <!-- Header -->
-    <div class="flex items-center justify-between">
-      <h2 class="text-2xl font-bold text-gray-800">✅ 할 일</h2>
-      <button @click="showForm = true" class="btn btn-primary">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <h2 class="text-xl sm:text-2xl font-display font-bold text-gray-800">✅ 할 일</h2>
+      <button @click="showForm = true" class="btn btn-primary self-start sm:self-auto">
         + 새 할 일
       </button>
     </div>
 
     <!-- Filter -->
-    <div class="flex gap-2">
+    <div class="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
       <button
         v-for="f in ['all', 'active', 'completed'] as const"
         :key="f"
         @click="filter = f; loadTodos()"
         :class="[
-          'px-4 py-2 rounded-lg text-sm font-medium transition-all',
-          filter === f ? 'bg-primary-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+          'px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap flex-shrink-0',
+          filter === f ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/25' : 'bg-white/80 text-gray-600 hover:bg-gray-100'
         ]"
       >
         {{ f === 'all' ? '전체' : f === 'active' ? '진행 중' : '완료' }}
@@ -134,98 +134,138 @@ onMounted(loadTodos);
     </div>
 
     <!-- Form Modal -->
-    <div v-if="showForm" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-2xl p-6 w-full max-w-lg mx-4">
-        <h3 class="text-xl font-bold mb-4">
-          {{ editingId ? '할 일 수정' : '새 할 일' }}
-        </h3>
-        <form @submit.prevent="handleSubmit" class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">제목</label>
-            <input v-model="form.title" type="text" class="input" required />
+    <Teleport to="body">
+      <Transition name="modal">
+        <div v-if="showForm" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" @click.self="resetForm">
+          <div class="bg-white rounded-2xl p-4 sm:p-6 w-full max-w-lg shadow-2xl animate-slide-up">
+            <h3 class="text-lg sm:text-xl font-display font-bold mb-4 flex items-center gap-2">
+              <span class="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center text-sm">✅</span>
+              {{ editingId ? '할 일 수정' : '새 할 일' }}
+            </h3>
+            <form @submit.prevent="handleSubmit" class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">제목</label>
+                <input v-model="form.title" type="text" class="input" required placeholder="할 일 제목" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">설명</label>
+                <textarea v-model="form.description" rows="3" class="input resize-none" placeholder="상세 설명 (선택)"></textarea>
+              </div>
+              <div class="grid grid-cols-2 gap-3 sm:gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">우선순위</label>
+                  <select v-model="form.priority" class="input">
+                    <option value="low">낮음</option>
+                    <option value="medium">보통</option>
+                    <option value="high">높음</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">마감일</label>
+                  <input v-model="form.due_date" type="date" class="input" />
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">태그 (쉼표로 구분)</label>
+                <input v-model="form.tags" type="text" class="input" placeholder="업무, 개인, 중요" />
+              </div>
+              <div class="flex gap-3 justify-end pt-2">
+                <button type="button" @click="resetForm" class="btn btn-secondary">취소</button>
+                <button type="submit" class="btn btn-primary">저장</button>
+              </div>
+            </form>
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">설명</label>
-            <textarea v-model="form.description" rows="3" class="input"></textarea>
-          </div>
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">우선순위</label>
-              <select v-model="form.priority" class="input">
-                <option value="low">낮음</option>
-                <option value="medium">보통</option>
-                <option value="high">높음</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">마감일</label>
-              <input v-model="form.due_date" type="date" class="input" />
-            </div>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">태그 (쉼표로 구분)</label>
-            <input v-model="form.tags" type="text" class="input" placeholder="태그1, 태그2" />
-          </div>
-          <div class="flex gap-3 justify-end">
-            <button type="button" @click="resetForm" class="btn btn-secondary">취소</button>
-            <button type="submit" class="btn btn-primary">저장</button>
-          </div>
-        </form>
-      </div>
-    </div>
+        </div>
+      </Transition>
+    </Teleport>
 
     <!-- Todo List -->
-    <div v-if="loading" class="text-center py-12 text-gray-400">로딩 중...</div>
-    <div v-else-if="todos.length === 0" class="text-center py-12 text-gray-400">
-      할 일이 없습니다
+    <div v-if="loading" class="text-center py-12 text-gray-400">
+      <div class="animate-pulse-soft text-4xl mb-2">✅</div>
+      로딩 중...
+    </div>
+    <div v-else-if="todos.length === 0" class="empty-state card">
+      <div class="empty-state-icon">📭</div>
+      <p class="text-gray-500">할 일이 없습니다</p>
+      <p class="text-sm text-gray-400 mt-1">새 할 일을 추가해보세요!</p>
     </div>
     <div v-else class="space-y-3">
       <div
-        v-for="todo in todos"
+        v-for="(todo, index) in todos"
         :key="todo.id"
         :class="[
-          'card flex items-center gap-4 transition-all',
+          'card !p-3 sm:!p-4 flex items-start sm:items-center gap-3 sm:gap-4 transition-all group animate-slide-up',
           todo.completed && 'opacity-60'
         ]"
+        :style="{ animationDelay: `${index * 50}ms` }"
       >
         <button
           @click="handleToggle(todo)"
           :class="[
-            'w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all',
+            'w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0 mt-0.5 sm:mt-0',
             todo.completed
               ? 'bg-green-500 border-green-500 text-white'
               : 'border-gray-300 hover:border-primary-500'
           ]"
         >
-          <span v-if="todo.completed">✓</span>
+          <span v-if="todo.completed" class="text-xs">✓</span>
         </button>
         
-        <div class="flex-1">
-          <div class="flex items-center gap-2">
-            <span :class="['font-medium', todo.completed && 'line-through text-gray-400']">
+        <div class="flex-1 min-w-0">
+          <div class="flex flex-wrap items-center gap-2">
+            <span :class="['font-medium text-sm sm:text-base', todo.completed && 'line-through text-gray-400']">
               {{ todo.title }}
             </span>
-            <span :class="['tag', priorityClass(todo.priority)]">
+            <span :class="['tag text-xs', priorityClass(todo.priority)]">
               {{ todo.priority === 'high' ? '높음' : todo.priority === 'medium' ? '보통' : '낮음' }}
             </span>
           </div>
-          <p v-if="todo.description" class="text-sm text-gray-500 mt-1">
+          <p v-if="todo.description" class="text-xs sm:text-sm text-gray-500 mt-1 line-clamp-2">
             {{ todo.description }}
           </p>
-          <div class="flex items-center gap-3 mt-2 text-xs text-gray-400">
-            <span v-if="todo.due_date">📅 {{ formatDate(todo.due_date) }}</span>
-            <span v-for="tag in todo.tags" :key="tag" class="tag bg-gray-100 text-gray-600">
+          <div class="flex flex-wrap items-center gap-2 mt-2">
+            <span v-if="todo.due_date" class="text-xs text-gray-400 flex items-center gap-1">
+              <span>📅</span> {{ formatDate(todo.due_date) }}
+            </span>
+            <span v-for="tag in todo.tags.slice(0, 2)" :key="tag" class="tag bg-gray-100 text-gray-600 text-xs">
               {{ tag }}
             </span>
+            <span v-if="todo.tags.length > 2" class="text-xs text-gray-400">+{{ todo.tags.length - 2 }}</span>
           </div>
         </div>
         
-        <div class="flex gap-2">
-          <button @click="handleEdit(todo)" class="text-gray-400 hover:text-primary-500">✏️</button>
-          <button @click="handleDelete(todo.id)" class="text-gray-400 hover:text-red-500">🗑️</button>
+        <div class="flex gap-1 sm:gap-2 opacity-60 sm:opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+          <button @click="handleEdit(todo)" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-primary-50 text-gray-400 hover:text-primary-500 transition-all">
+            ✏️
+          </button>
+          <button @click="handleDelete(todo.id)" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-all">
+            🗑️
+          </button>
         </div>
       </div>
     </div>
   </div>
 </template>
 
+<style scoped>
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-active .animate-slide-up,
+.modal-leave-active .animate-slide-up {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.modal-enter-from .animate-slide-up,
+.modal-leave-to .animate-slide-up {
+  transform: translateY(10px);
+  opacity: 0;
+}
+</style>

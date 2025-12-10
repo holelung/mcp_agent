@@ -115,17 +115,17 @@ onMounted(loadMemos);
 </script>
 
 <template>
-  <div class="space-y-6 animate-fade-in">
+  <div class="space-y-4 sm:space-y-6 animate-fade-in">
     <!-- Header -->
-    <div class="flex items-center justify-between">
-      <h2 class="text-2xl font-display font-bold text-gray-800">📝 메모</h2>
-      <button @click="showForm = true" class="btn btn-primary">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <h2 class="text-xl sm:text-2xl font-display font-bold text-gray-800">📝 메모</h2>
+      <button @click="showForm = true" class="btn btn-primary self-start sm:self-auto">
         + 새 메모
       </button>
     </div>
 
     <!-- Search -->
-    <div class="flex gap-4">
+    <div class="flex gap-2 sm:gap-4">
       <input
         v-model="searchQuery"
         @keyup.enter="loadMemos"
@@ -133,15 +133,18 @@ onMounted(loadMemos);
         placeholder="메모 검색..."
         class="input flex-1"
       />
-      <button @click="loadMemos" class="btn btn-secondary">검색</button>
+      <button @click="loadMemos" class="btn btn-secondary">
+        <span class="sm:hidden">🔍</span>
+        <span class="hidden sm:inline">검색</span>
+      </button>
     </div>
 
     <!-- Form Modal -->
     <Teleport to="body">
       <Transition name="modal">
         <div v-if="showForm" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" @click.self="resetForm">
-          <div class="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl animate-slide-up">
-            <h3 class="text-xl font-display font-bold mb-4 flex items-center gap-2">
+          <div class="bg-white rounded-2xl p-4 sm:p-6 w-full max-w-lg shadow-2xl animate-slide-up">
+            <h3 class="text-lg sm:text-xl font-display font-bold mb-4 flex items-center gap-2">
               <span class="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center text-sm">📝</span>
               {{ editingId ? '메모 수정' : '새 메모' }}
             </h3>
@@ -156,7 +159,7 @@ onMounted(loadMemos);
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">태그 (쉼표로 구분)</label>
-                <input v-model="form.tags" type="text" class="input" placeholder="태그1, 태그2, 태그3" />
+                <input v-model="form.tags" type="text" class="input" placeholder="아이디어, 업무, 개인" />
               </div>
               <div class="flex gap-3 justify-end pt-2">
                 <button type="button" @click="resetForm" class="btn btn-secondary">취소</button>
@@ -174,11 +177,11 @@ onMounted(loadMemos);
         <div v-if="selectedMemo" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" @click.self="closeDetail">
           <div class="bg-white rounded-2xl w-full max-w-2xl shadow-2xl animate-slide-up max-h-[90vh] flex flex-col">
             <!-- Header -->
-            <div class="p-6 border-b border-gray-100">
-              <div class="flex items-start justify-between">
-                <div class="flex-1">
-                  <h3 class="text-xl font-display font-bold text-gray-900">{{ selectedMemo.title }}</h3>
-                  <div class="flex items-center gap-3 mt-2 text-sm text-gray-500">
+            <div class="p-4 sm:p-6 border-b border-gray-100">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-lg sm:text-xl font-display font-bold text-gray-900 break-words">{{ selectedMemo.title }}</h3>
+                  <div class="flex flex-wrap items-center gap-2 sm:gap-3 mt-2 text-xs sm:text-sm text-gray-500">
                     <span class="flex items-center gap-1">
                       <span>📅</span>
                       {{ formatFullDate(selectedMemo.created_at) }}
@@ -189,7 +192,7 @@ onMounted(loadMemos);
                     </span>
                   </div>
                 </div>
-                <button @click="closeDetail" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">
+                <button @click="closeDetail" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0">
                   ✕
                 </button>
               </div>
@@ -199,7 +202,7 @@ onMounted(loadMemos);
                 <span
                   v-for="tag in selectedMemo.tags"
                   :key="tag"
-                  class="tag tag-primary"
+                  class="tag tag-primary text-xs"
                 >
                   #{{ tag }}
                 </span>
@@ -207,18 +210,18 @@ onMounted(loadMemos);
             </div>
             
             <!-- Content -->
-            <div class="p-6 flex-1 overflow-y-auto">
+            <div class="p-4 sm:p-6 flex-1 overflow-y-auto">
               <div class="prose prose-gray max-w-none">
-                <p class="text-gray-700 whitespace-pre-wrap leading-relaxed">{{ formatContent(selectedMemo.content) }}</p>
+                <p class="text-gray-700 whitespace-pre-wrap leading-relaxed text-sm sm:text-base">{{ formatContent(selectedMemo.content) }}</p>
               </div>
             </div>
             
             <!-- Actions -->
-            <div class="p-4 border-t border-gray-100 bg-gray-50 rounded-b-2xl flex justify-end gap-3">
-              <button @click="handleEdit(selectedMemo)" class="btn btn-secondary">
+            <div class="p-3 sm:p-4 border-t border-gray-100 bg-gray-50 rounded-b-2xl flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
+              <button @click="handleEdit(selectedMemo)" class="btn btn-secondary justify-center">
                 <span>✏️</span> 수정
               </button>
-              <button @click="handleDelete(selectedMemo.id)" class="btn btn-danger">
+              <button @click="handleDelete(selectedMemo.id)" class="btn btn-danger justify-center">
                 <span>🗑️</span> 삭제
               </button>
             </div>
@@ -232,44 +235,45 @@ onMounted(loadMemos);
       <div class="animate-pulse-soft text-4xl mb-2">📝</div>
       로딩 중...
     </div>
-    <div v-else-if="memos.length === 0" class="empty-state">
+    <div v-else-if="memos.length === 0" class="empty-state card">
       <div class="empty-state-icon">📭</div>
       <p class="text-gray-500">메모가 없습니다</p>
       <p class="text-sm text-gray-400 mt-1">새 메모를 작성해보세요!</p>
     </div>
-    <div v-else class="grid gap-4">
+    <div v-else class="grid gap-3 sm:gap-4">
       <div
         v-for="(memo, index) in memos"
         :key="memo.id"
         @click="openDetail(memo)"
-        class="card hover:shadow-lg cursor-pointer group animate-slide-up"
+        class="card !p-3 sm:!p-4 hover:shadow-lg cursor-pointer group animate-slide-up"
         :style="{ animationDelay: `${index * 50}ms` }"
       >
-        <div class="flex items-start justify-between">
+        <div class="flex items-start justify-between gap-2">
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2">
-              <h3 class="font-semibold text-gray-800 group-hover:text-primary-600 transition-colors truncate">{{ memo.title }}</h3>
-              <span class="text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">클릭하여 상세보기</span>
+              <h3 class="font-semibold text-gray-800 group-hover:text-primary-600 transition-colors truncate text-sm sm:text-base">{{ memo.title }}</h3>
+              <span class="text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:inline">클릭하여 상세보기</span>
             </div>
-            <p class="text-gray-600 mt-2 whitespace-pre-wrap line-clamp-3 text-sm">{{ formatContent(memo.content) }}</p>
-            <div class="flex items-center gap-2 mt-3 flex-wrap">
+            <p class="text-gray-600 mt-2 whitespace-pre-wrap line-clamp-2 sm:line-clamp-3 text-xs sm:text-sm">{{ formatContent(memo.content) }}</p>
+            <div class="flex items-center gap-1.5 sm:gap-2 mt-2 sm:mt-3 flex-wrap">
               <span
-                v-for="tag in memo.tags"
+                v-for="tag in memo.tags.slice(0, 3)"
                 :key="tag"
                 class="tag tag-primary text-xs"
               >
                 {{ tag }}
               </span>
+              <span v-if="memo.tags.length > 3" class="text-xs text-gray-400">+{{ memo.tags.length - 3 }}</span>
             </div>
             <div class="text-xs text-gray-400 mt-2">
               {{ formatDate(memo.updated_at) }}
             </div>
           </div>
-          <div class="flex gap-2 ml-4 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button @click.stop="handleEdit(memo)" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-primary-50 text-gray-400 hover:text-primary-500 transition-all">
+          <div class="flex gap-1 opacity-60 sm:opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+            <button @click.stop="handleEdit(memo)" class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg hover:bg-primary-50 text-gray-400 hover:text-primary-500 transition-all">
               ✏️
             </button>
-            <button @click.stop="handleDelete(memo.id)" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-all">
+            <button @click.stop="handleDelete(memo.id)" class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-all">
               🗑️
             </button>
           </div>

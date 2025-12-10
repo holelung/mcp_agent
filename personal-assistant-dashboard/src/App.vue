@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import { getSummary, type Summary } from './api';
 import Sidebar from './components/Sidebar.vue';
 import Dashboard from './views/Dashboard.vue';
@@ -59,24 +59,29 @@ onMounted(() => {
       ></div>
     </Transition>
 
-    <!-- Sidebar -->
+    <!-- Desktop Sidebar (항상 표시) -->
+    <Sidebar
+      :current-view="currentView"
+      :summary="summary"
+      class="hidden lg:flex"
+      @navigate="handleNavigate"
+      @close="sidebarOpen = false"
+    />
+
+    <!-- Mobile Sidebar (슬라이드 오버레이) -->
     <Transition name="slide">
       <Sidebar
-        v-show="sidebarOpen || true"
+        v-if="sidebarOpen"
         :current-view="currentView"
         :summary="summary"
-        :class="[
-          'fixed lg:relative z-50 h-full',
-          'transition-transform duration-300 ease-out',
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-        ]"
+        class="lg:hidden fixed z-50 h-full"
         @navigate="handleNavigate"
         @close="sidebarOpen = false"
       />
     </Transition>
     
     <!-- Main Content -->
-    <main class="flex-1 overflow-auto bg-gradient-to-br from-slate-50 via-primary-50/30 to-slate-100">
+    <main class="flex-1 overflow-auto bg-gradient-to-br from-slate-50 via-primary-50/30 to-slate-100 w-full">
       <!-- Background decorations -->
       <div class="fixed inset-0 pointer-events-none overflow-hidden -z-10">
         <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-primary-200/20 rounded-full filter blur-3xl"></div>
