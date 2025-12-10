@@ -1,0 +1,212 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Sora:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --sidebar-bg: linear-gradient(180deg, #1e1b4b 0%, #312e81 50%, #3730a3 100%);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.2);
+}
+
+body {
+  font-family: 'Outfit', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 50%, #f0f9ff 100%);
+  min-height: 100vh;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c7d2fe;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a5b4fc;
+}
+
+@layer components {
+  /* Glass Card */
+  .card {
+    @apply bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg shadow-primary-500/5 border border-white/50 p-6;
+    @apply transition-all duration-300 ease-out;
+    @apply hover:shadow-xl hover:shadow-primary-500/10 hover:-translate-y-0.5;
+  }
+
+  .card-solid {
+    @apply bg-white rounded-2xl shadow-lg shadow-gray-200/50 border border-gray-100 p-6;
+    @apply transition-all duration-300;
+  }
+
+  /* Buttons */
+  .btn {
+    @apply px-5 py-2.5 rounded-xl font-medium transition-all duration-200;
+    @apply flex items-center justify-center gap-2;
+    @apply active:scale-95;
+  }
+  
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary-500 to-primary-600 text-white;
+    @apply hover:from-primary-600 hover:to-primary-700;
+    @apply shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30;
+  }
+  
+  .btn-secondary {
+    @apply bg-white/80 text-gray-700 border border-gray-200;
+    @apply hover:bg-white hover:border-gray-300 hover:shadow-md;
+  }
+  
+  .btn-danger {
+    @apply bg-gradient-to-r from-red-500 to-rose-500 text-white;
+    @apply hover:from-red-600 hover:to-rose-600;
+    @apply shadow-lg shadow-red-500/25;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-800;
+  }
+
+  /* Inputs */
+  .input {
+    @apply w-full px-4 py-3 bg-white/50 border border-gray-200 rounded-xl;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-400;
+    @apply placeholder:text-gray-400 transition-all duration-200;
+    @apply hover:border-gray-300;
+  }
+
+  .input-group {
+    @apply relative;
+  }
+
+  .input-icon {
+    @apply absolute left-4 top-1/2 -translate-y-1/2 text-gray-400;
+  }
+
+  .input-with-icon {
+    @apply pl-12;
+  }
+
+  /* Tags */
+  .tag {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+    @apply transition-all duration-200;
+  }
+
+  .tag-primary {
+    @apply bg-primary-100 text-primary-700 hover:bg-primary-200;
+  }
+
+  .tag-gray {
+    @apply bg-gray-100 text-gray-600 hover:bg-gray-200;
+  }
+  
+  /* Priority Tags */
+  .priority-high {
+    @apply bg-gradient-to-r from-red-100 to-rose-100 text-red-700 border border-red-200/50;
+  }
+  
+  .priority-medium {
+    @apply bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-700 border border-amber-200/50;
+  }
+  
+  .priority-low {
+    @apply bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-700 border border-emerald-200/50;
+  }
+
+  /* Stat Card */
+  .stat-card {
+    @apply card relative overflow-hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    @apply absolute -right-6 -top-6 w-24 h-24 rounded-full opacity-10;
+  }
+
+  .stat-card-blue::before {
+    @apply bg-blue-500;
+  }
+
+  .stat-card-amber::before {
+    @apply bg-amber-500;
+  }
+
+  .stat-card-emerald::before {
+    @apply bg-emerald-500;
+  }
+
+  .stat-card-violet::before {
+    @apply bg-violet-500;
+  }
+
+  /* Icon Containers */
+  .icon-box {
+    @apply w-14 h-14 rounded-2xl flex items-center justify-center text-2xl;
+    @apply transition-transform duration-300 hover:scale-110;
+  }
+
+  /* List Items */
+  .list-item {
+    @apply flex items-center gap-4 p-4 rounded-xl;
+    @apply transition-all duration-200;
+    @apply hover:bg-gray-50/80;
+  }
+
+  /* Empty State */
+  .empty-state {
+    @apply text-center py-12 text-gray-400;
+  }
+
+  .empty-state-icon {
+    @apply text-5xl mb-4 opacity-50;
+  }
+
+  /* Modal Overlay */
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/40 backdrop-blur-sm z-40;
+    @apply flex items-center justify-center p-4;
+  }
+
+  .modal-content {
+    @apply bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-auto;
+    @apply animate-slide-up;
+  }
+
+  /* Checkbox custom */
+  .checkbox-custom {
+    @apply w-5 h-5 rounded-lg border-2 border-gray-300;
+    @apply checked:bg-primary-500 checked:border-primary-500;
+    @apply transition-all duration-200 cursor-pointer;
+    @apply hover:border-primary-400;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center justify-center min-w-[20px] h-5 px-1.5;
+    @apply text-xs font-bold rounded-full;
+  }
+
+  .badge-danger {
+    @apply bg-red-500 text-white;
+  }
+
+  .badge-primary {
+    @apply bg-primary-500 text-white;
+  }
+}
+
+/* Animation utilities */
+.animate-delay-100 { animation-delay: 100ms; }
+.animate-delay-200 { animation-delay: 200ms; }
+.animate-delay-300 { animation-delay: 300ms; }
+.animate-delay-400 { animation-delay: 400ms; }

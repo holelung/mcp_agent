@@ -1,0 +1,69 @@
+# Personal Assistant - 통합 Docker Compose
+# PostgreSQL + Backend API + Dashboard
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: pa-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: assistant
+      POSTGRES_PASSWORD: assistant123
+      POSTGRES_DB: personal_assistant
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./personal-assistant-mcp/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U assistant -d personal_assistant"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pa-network
+
+  # Backend API Server
+  backend:
+    build:
+      context: ./personal-assistant-backend
+      dockerfile: Dockerfile
+    container_name: pa-backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: personal_assistant
+      DB_USER: assistant
+      DB_PASSWORD: assistant123
+      API_PORT: 3001
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - pa-network
+
+  # Frontend Dashboard
+  dashboard:
+    build:
+      context: ./personal-assistant-dashboard
+      dockerfile: Dockerfile
+    container_name: pa-dashboard
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - pa-network
+
+volumes:
+  postgres_data:
+
+networks:
+  pa-network:
+    driver: bridge
+

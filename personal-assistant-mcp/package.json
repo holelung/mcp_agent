@@ -1,0 +1,33 @@
+{
+  "name": "personal-assistant-mcp",
+  "version": "1.0.0",
+  "description": "개인 비서 MCP 서버 - 메모, 할 일, 일정, 북마크 관리",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch",
+    "db:up": "docker-compose up -d",
+    "db:down": "docker-compose down",
+    "db:logs": "docker-compose logs -f postgres"
+  },
+  "keywords": [
+    "mcp",
+    "personal-assistant",
+    "productivity"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "pg": "^8.13.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.11.10",
+    "@types/node": "^22.10.1",
+    "typescript": "^5.7.2"
+  }
+}
+
