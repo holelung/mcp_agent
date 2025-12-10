@@ -211,11 +211,11 @@ onMounted(loadSchedules);
 </script>
 
 <template>
-  <div class="space-y-6 animate-fade-in">
+  <div class="space-y-4 sm:space-y-6 animate-fade-in">
     <!-- Header -->
-    <div class="flex items-center justify-between">
-      <h2 class="text-2xl font-display font-bold text-gray-800">📅 일정</h2>
-      <button @click="showForm = true" class="btn btn-primary">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <h2 class="text-xl sm:text-2xl font-display font-bold text-gray-800">📅 일정</h2>
+      <button @click="showForm = true" class="btn btn-primary self-start sm:self-auto">
         + 새 일정
       </button>
     </div>
@@ -224,8 +224,8 @@ onMounted(loadSchedules);
     <Teleport to="body">
       <Transition name="modal">
         <div v-if="showForm" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" @click.self="resetForm">
-          <div class="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl animate-slide-up">
-            <h3 class="text-xl font-display font-bold mb-4 flex items-center gap-2">
+          <div class="bg-white rounded-2xl p-4 sm:p-6 w-full max-w-lg shadow-2xl animate-slide-up">
+            <h3 class="text-lg sm:text-xl font-display font-bold mb-4 flex items-center gap-2">
               <span class="w-8 h-8 bg-gradient-to-br from-orange-500 to-amber-500 rounded-lg flex items-center justify-center text-sm">📅</span>
               {{ editingId ? '일정 수정' : '새 일정' }}
             </h3>
@@ -238,7 +238,7 @@ onMounted(loadSchedules);
                 <label class="block text-sm font-medium text-gray-700 mb-1">설명</label>
                 <textarea v-model="form.description" rows="2" class="input resize-none" placeholder="일정 설명 (선택)"></textarea>
               </div>
-              <div class="grid grid-cols-2 gap-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">시작 시간</label>
                   <input v-model="form.start_time" type="datetime-local" class="input" required />
@@ -266,34 +266,34 @@ onMounted(loadSchedules);
       </Transition>
     </Teleport>
 
-    <!-- Main Content -->
-    <div class="flex flex-col lg:flex-row gap-6">
+    <!-- Main Content: 큰 화면에서 2열 레이아웃 -->
+    <div class="grid grid-cols-1 lg:grid-cols-5 xl:grid-cols-3 2xl:grid-cols-2 gap-6">
       <!-- Calendar (Hidden on small screens) -->
-      <div class="hidden lg:block w-80 flex-shrink-0">
+      <div class="hidden lg:block lg:col-span-2 xl:col-span-1 2xl:col-span-1">
         <div class="card sticky top-8">
           <!-- Calendar Header -->
-          <div class="flex items-center justify-between mb-4">
-            <button @click="prevMonth" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-600 transition-colors">
+          <div class="flex items-center justify-between mb-4 xl:mb-6">
+            <button @click="prevMonth" class="w-8 h-8 xl:w-10 xl:h-10 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-600 transition-colors text-lg xl:text-xl">
               ‹
             </button>
-            <h3 class="font-display font-bold text-gray-800">{{ currentMonthName }}</h3>
-            <button @click="nextMonth" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-600 transition-colors">
+            <h3 class="font-display font-bold text-gray-800 text-base xl:text-lg 2xl:text-xl">{{ currentMonthName }}</h3>
+            <button @click="nextMonth" class="w-8 h-8 xl:w-10 xl:h-10 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-600 transition-colors text-lg xl:text-xl">
               ›
             </button>
           </div>
 
           <!-- Today Button -->
-          <button @click="goToToday" class="w-full mb-4 py-2 text-sm text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
+          <button @click="goToToday" class="w-full mb-4 xl:mb-6 py-2 xl:py-3 text-sm xl:text-base text-primary-600 hover:bg-primary-50 rounded-lg xl:rounded-xl transition-colors font-medium">
             오늘로 이동
           </button>
 
           <!-- Days of Week -->
-          <div class="grid grid-cols-7 mb-2">
+          <div class="grid grid-cols-7 mb-2 xl:mb-3">
             <div
               v-for="day in daysOfWeek"
               :key="day"
               :class="[
-                'text-center text-xs font-medium py-2',
+                'text-center text-xs xl:text-sm font-medium py-2 xl:py-3',
                 day === '일' ? 'text-red-500' : day === '토' ? 'text-blue-500' : 'text-gray-500'
               ]"
             >
@@ -302,13 +302,13 @@ onMounted(loadSchedules);
           </div>
 
           <!-- Calendar Grid -->
-          <div class="grid grid-cols-7 gap-1">
+          <div class="grid grid-cols-7 gap-1 xl:gap-2">
             <button
               v-for="(day, index) in calendarDays"
               :key="index"
               @click="selectDate(day.date)"
               :class="[
-                'relative aspect-square flex items-center justify-center text-sm rounded-lg transition-all',
+                'relative aspect-square flex items-center justify-center text-sm xl:text-base 2xl:text-lg rounded-lg xl:rounded-xl transition-all font-medium',
                 day.isCurrentMonth ? 'text-gray-700' : 'text-gray-300',
                 day.isToday && !day.isSelected && 'ring-2 ring-primary-400 ring-inset',
                 day.isSelected && 'bg-gradient-to-br from-primary-500 to-violet-500 text-white shadow-lg',
@@ -321,15 +321,15 @@ onMounted(loadSchedules);
               <!-- Schedule Indicator -->
               <span
                 v-if="day.hasSchedule && !day.isSelected"
-                class="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary-500 rounded-full"
+                class="absolute bottom-1 xl:bottom-1.5 left-1/2 -translate-x-1/2 w-1 xl:w-1.5 h-1 xl:h-1.5 bg-primary-500 rounded-full"
               ></span>
             </button>
           </div>
 
           <!-- Selected Date Info -->
-          <div class="mt-4 pt-4 border-t border-gray-100">
-            <p class="text-sm font-medium text-gray-600">{{ formatSelectedDate }}</p>
-            <p class="text-xs text-gray-400 mt-1">
+          <div class="mt-4 xl:mt-6 pt-4 xl:pt-6 border-t border-gray-100">
+            <p class="text-sm xl:text-base font-medium text-gray-600">{{ formatSelectedDate }}</p>
+            <p class="text-xs xl:text-sm text-gray-400 mt-1">
               {{ selectedDateSchedules.length }}개의 일정
             </p>
           </div>
@@ -337,7 +337,7 @@ onMounted(loadSchedules);
       </div>
 
       <!-- Schedule List -->
-      <div class="flex-1 min-w-0">
+      <div class="lg:col-span-3 xl:col-span-2 2xl:col-span-1 min-w-0">
         <!-- Mobile: Show all schedules, Desktop: Show selected date schedules -->
         <div class="lg:hidden">
           <!-- All Schedules for Mobile -->
@@ -345,7 +345,7 @@ onMounted(loadSchedules);
             <div class="animate-pulse-soft text-4xl mb-2">📅</div>
             로딩 중...
           </div>
-          <div v-else-if="schedules.length === 0" class="empty-state">
+          <div v-else-if="schedules.length === 0" class="empty-state card">
             <div class="empty-state-icon">📭</div>
             <p class="text-gray-500">일정이 없습니다</p>
             <p class="text-sm text-gray-400 mt-1">새 일정을 추가해보세요!</p>
@@ -355,34 +355,34 @@ onMounted(loadSchedules);
               v-for="(schedule, index) in schedules"
               :key="schedule.id"
               :class="[
-                'card transition-all animate-slide-up',
+                'card !p-3 sm:!p-4 transition-all animate-slide-up',
                 isToday(schedule.start_time) && 'border-l-4 border-l-primary-500'
               ]"
               :style="{ animationDelay: `${index * 50}ms` }"
             >
-              <div class="flex items-start justify-between">
+              <div class="flex items-start justify-between gap-2">
                 <div class="flex-1 min-w-0">
-                  <div class="flex items-center gap-2">
-                    <span class="font-semibold text-gray-800">{{ schedule.title }}</span>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="font-semibold text-gray-800 text-sm sm:text-base">{{ schedule.title }}</span>
                     <span v-if="isToday(schedule.start_time)" class="tag tag-primary text-xs">
                       오늘
                     </span>
                   </div>
-                  <p v-if="schedule.description" class="text-sm text-gray-500 mt-1 line-clamp-2">
+                  <p v-if="schedule.description" class="text-xs sm:text-sm text-gray-500 mt-1 line-clamp-2">
                     {{ schedule.description }}
                   </p>
-                  <div class="flex flex-wrap items-center gap-3 mt-3 text-sm text-gray-500">
+                  <div class="flex flex-wrap items-center gap-2 sm:gap-3 mt-2 sm:mt-3 text-xs sm:text-sm text-gray-500">
                     <span class="flex items-center gap-1">
                       <span>🕐</span>
                       {{ formatDateTime(schedule.start_time) }}
                     </span>
-                    <span v-if="schedule.end_time">~ {{ formatDateTime(schedule.end_time) }}</span>
+                    <span v-if="schedule.end_time">~ {{ formatTime(schedule.end_time) }}</span>
                     <span v-if="schedule.location" class="flex items-center gap-1">
                       <span>📍</span>
                       {{ schedule.location }}
                     </span>
                   </div>
-                  <div class="flex gap-1 mt-2">
+                  <div class="flex flex-wrap gap-1 mt-2">
                     <span
                       v-for="tag in schedule.tags"
                       :key="tag"
@@ -392,11 +392,11 @@ onMounted(loadSchedules);
                     </span>
                   </div>
                 </div>
-                <div class="flex gap-2 ml-4 opacity-60 hover:opacity-100 transition-opacity">
-                  <button @click="handleEdit(schedule)" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-primary-50 text-gray-400 hover:text-primary-500 transition-all">
+                <div class="flex gap-1 opacity-60 transition-opacity flex-shrink-0">
+                  <button @click="handleEdit(schedule)" class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg hover:bg-primary-50 text-gray-400 hover:text-primary-500 transition-all">
                     ✏️
                   </button>
-                  <button @click="handleDelete(schedule.id)" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-all">
+                  <button @click="handleDelete(schedule.id)" class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-all">
                     🗑️
                   </button>
                 </div>
@@ -407,9 +407,9 @@ onMounted(loadSchedules);
 
         <!-- Desktop: Selected Date Schedules -->
         <div class="hidden lg:block">
-          <div class="card mb-4">
-            <h3 class="font-display font-bold text-gray-800 flex items-center gap-2">
-              <span class="w-8 h-8 bg-gradient-to-br from-orange-500 to-amber-500 rounded-lg flex items-center justify-center text-sm">📅</span>
+          <div class="card mb-4 xl:mb-6">
+            <h3 class="font-display font-bold text-gray-800 flex items-center gap-2 xl:gap-3 text-base xl:text-lg">
+              <span class="w-8 h-8 xl:w-10 xl:h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-lg xl:rounded-xl flex items-center justify-center text-sm xl:text-base">📅</span>
               {{ formatSelectedDate }}
             </h3>
           </div>
@@ -423,39 +423,39 @@ onMounted(loadSchedules);
             <p class="text-gray-500">이 날짜에 일정이 없습니다</p>
             <p class="text-sm text-gray-400 mt-1">새 일정을 추가해보세요!</p>
           </div>
-          <div v-else class="space-y-3">
+          <div v-else class="space-y-3 xl:space-y-4">
             <div
               v-for="(schedule, index) in selectedDateSchedules"
               :key="schedule.id"
               class="card hover:shadow-lg transition-all animate-slide-up group"
               :style="{ animationDelay: `${index * 50}ms` }"
             >
-              <div class="flex items-start gap-4">
+              <div class="flex items-start gap-4 xl:gap-6">
                 <!-- Time Column -->
-                <div class="flex-shrink-0 w-20 text-center">
-                  <div class="text-lg font-bold text-primary-600">{{ formatTime(schedule.start_time) }}</div>
-                  <div v-if="schedule.end_time" class="text-xs text-gray-400">
+                <div class="flex-shrink-0 w-20 xl:w-24 text-center">
+                  <div class="text-lg xl:text-xl font-bold text-primary-600">{{ formatTime(schedule.start_time) }}</div>
+                  <div v-if="schedule.end_time" class="text-xs xl:text-sm text-gray-400">
                     ~ {{ formatTime(schedule.end_time) }}
                   </div>
                 </div>
 
                 <!-- Content -->
-                <div class="flex-1 min-w-0 border-l-2 border-primary-200 pl-4">
-                  <h4 class="font-semibold text-gray-800 group-hover:text-primary-600 transition-colors">
+                <div class="flex-1 min-w-0 border-l-2 border-primary-200 pl-4 xl:pl-6">
+                  <h4 class="font-semibold text-gray-800 group-hover:text-primary-600 transition-colors text-base xl:text-lg">
                     {{ schedule.title }}
                   </h4>
-                  <p v-if="schedule.description" class="text-sm text-gray-500 mt-1">
+                  <p v-if="schedule.description" class="text-sm xl:text-base text-gray-500 mt-1">
                     {{ schedule.description }}
                   </p>
-                  <div v-if="schedule.location" class="flex items-center gap-1 mt-2 text-sm text-gray-500">
+                  <div v-if="schedule.location" class="flex items-center gap-1 mt-2 text-sm xl:text-base text-gray-500">
                     <span>📍</span>
                     <span>{{ schedule.location }}</span>
                   </div>
-                  <div class="flex gap-1.5 mt-2">
+                  <div class="flex gap-1.5 xl:gap-2 mt-2">
                     <span
                       v-for="tag in schedule.tags"
                       :key="tag"
-                      class="tag tag-gray text-xs"
+                      class="tag tag-gray text-xs xl:text-sm"
                     >
                       {{ tag }}
                     </span>
@@ -464,10 +464,10 @@ onMounted(loadSchedules);
 
                 <!-- Actions -->
                 <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button @click="handleEdit(schedule)" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-primary-50 text-gray-400 hover:text-primary-500 transition-all">
+                  <button @click="handleEdit(schedule)" class="w-8 h-8 xl:w-10 xl:h-10 flex items-center justify-center rounded-lg xl:rounded-xl hover:bg-primary-50 text-gray-400 hover:text-primary-500 transition-all">
                     ✏️
                   </button>
-                  <button @click="handleDelete(schedule.id)" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-all">
+                  <button @click="handleDelete(schedule.id)" class="w-8 h-8 xl:w-10 xl:h-10 flex items-center justify-center rounded-lg xl:rounded-xl hover:bg-red-50 text-gray-400 hover:text-red-500 transition-all">
                     🗑️
                   </button>
                 </div>
@@ -476,29 +476,29 @@ onMounted(loadSchedules);
           </div>
 
           <!-- All Schedules Section -->
-          <div class="mt-8">
-            <h3 class="font-display font-bold text-gray-600 mb-4 flex items-center gap-2">
+          <div class="mt-8 xl:mt-10">
+            <h3 class="font-display font-bold text-gray-600 mb-4 xl:mb-6 flex items-center gap-2 text-base xl:text-lg">
               <span>📋</span> 전체 일정
-              <span class="text-sm font-normal text-gray-400">({{ schedules.length }}개)</span>
+              <span class="text-sm xl:text-base font-normal text-gray-400">({{ schedules.length }}개)</span>
             </h3>
-            <div class="space-y-2">
+            <div class="space-y-2 xl:space-y-3">
               <div
                 v-for="schedule in schedules"
                 :key="schedule.id"
                 @click="selectDate(new Date(schedule.start_time))"
                 :class="[
-                  'p-3 rounded-xl cursor-pointer transition-all',
+                  'p-3 xl:p-4 rounded-xl xl:rounded-2xl cursor-pointer transition-all',
                   new Date(schedule.start_time).toDateString() === selectedDate.toDateString()
                     ? 'bg-primary-50 border border-primary-200'
                     : 'bg-gray-50 hover:bg-gray-100'
                 ]"
               >
-                <div class="flex items-center gap-3">
-                  <div class="text-xs font-medium text-gray-500 w-20">
+                <div class="flex items-center gap-3 xl:gap-4">
+                  <div class="text-xs xl:text-sm font-medium text-gray-500 w-20 xl:w-24">
                     {{ formatDateTime(schedule.start_time).split(' ').slice(0, 2).join(' ') }}
                   </div>
-                  <div class="flex-1 font-medium text-gray-700 truncate">{{ schedule.title }}</div>
-                  <span v-if="isToday(schedule.start_time)" class="tag tag-primary text-xs">오늘</span>
+                  <div class="flex-1 font-medium text-gray-700 truncate text-sm xl:text-base">{{ schedule.title }}</div>
+                  <span v-if="isToday(schedule.start_time)" class="tag tag-primary text-xs xl:text-sm">오늘</span>
                 </div>
               </div>
             </div>
