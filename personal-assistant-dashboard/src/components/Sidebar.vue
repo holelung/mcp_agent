@@ -8,6 +8,7 @@ defineProps<{
 
 const emit = defineEmits<{
   navigate: [view: string];
+  close: [];
 }>();
 
 const menuItems = [
@@ -29,14 +30,26 @@ const menuItems = [
 
     <!-- Logo -->
     <div class="relative p-6 border-b border-white/10">
-      <div class="flex items-center gap-3">
-        <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-violet-500 rounded-2xl flex items-center justify-center shadow-lg shadow-primary-500/30">
-          <span class="text-2xl">🤖</span>
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-violet-500 rounded-2xl flex items-center justify-center shadow-lg shadow-primary-500/30">
+            <span class="text-2xl">🤖</span>
+          </div>
+          <div>
+            <h1 class="text-xl font-display font-bold text-white">Personal</h1>
+            <h1 class="text-xl font-display font-bold bg-gradient-to-r from-primary-400 to-violet-400 bg-clip-text text-transparent">Assistant</h1>
+          </div>
         </div>
-        <div>
-          <h1 class="text-xl font-display font-bold text-white">Personal</h1>
-          <h1 class="text-xl font-display font-bold bg-gradient-to-r from-primary-400 to-violet-400 bg-clip-text text-transparent">Assistant</h1>
-        </div>
+        
+        <!-- Close Button (Mobile) -->
+        <button
+          @click="emit('close')"
+          class="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
     </div>
     
